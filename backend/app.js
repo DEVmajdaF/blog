@@ -1,9 +1,13 @@
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const authRouter = require('./routes/authRouter');
+const categorieRouter = require('./routes/categorieRouter');
+const postRouter = require('./routes/postRouter');
+const commentRouter = require('./routes/commentRouter');
+const { isAuthorized, isAuthenticated, VerifyToken } = require('./middleware/auth/authMiddleware');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -29,6 +33,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/categories',isAuthenticated, categorieRouter);
 app.use('/user',authRouter);
+app.use('/comment',isAuthenticated,commentRouter);
+app.use('/post',isAuthenticated,postRouter);
 
 module.exports = app;

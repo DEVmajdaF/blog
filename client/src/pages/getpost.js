@@ -1,4 +1,6 @@
 
+import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import AOS from 'aos';
 function Getpost() {
@@ -9,7 +11,7 @@ function Getpost() {
     <>
 <main id="main">
  
- 
+ HEEEEEEEEEEEEEEEEEEEEEEEEEELLO
   <section id="posts" className="posts">
       <div className="container" data-aos="fade-up">
         <div className="row g-5">

@@ -14,17 +14,81 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
   username  String
-  password  String   @db.VarChar(128)
-  active    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      Role     @default(author)
+  password  String    @db.VarChar(128)
+  active    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  role      Role      @default(author)
+  Post      Post[]
+  Comment   Comment[]
+  Like      Like[]
 }
 
 enum Role {
   admin
   author
+}
+
+model Post {
+  id        Int         @id @default(autoincrement())
+  title     String
+  content   String?     @db.Text
+  // "?"makke  a field optionnal
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  published Boolean     @default(false)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  categorie Categorie[]
+  comments  Comment[]
+  likes     Like[]
+  media     Media[]
+}
+
+model Media {
+  id     Int    @id @default(autoincrement())
+  url    String
+  type   String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+}
+
+model Categorie {
+  id     Int    @id @default(autoincrement())
+  name   String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+  // posts CategoriesOnPosts[]
+}
+
+// model CategoriesOnPosts {
+//   post       Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+//   postId     Int
+//   categorie  Categorie @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+//   categoryId Int
+
+//   @@id([postId, categoryId])
+// }
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String?  @db.Text
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Like {
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@id([postId, userId])
 }
